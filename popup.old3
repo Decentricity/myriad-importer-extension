@@ -1,0 +1,93 @@
+document.getElementById('send_magic_link').addEventListener('click', function() {
+  var email = document.getElementById('email').value;
+  sendMagicLink(email);
+});
+
+document.getElementById('submit_magic_link').addEventListener('click', function() {
+  var magicLink = document.getElementById('magic_link').value;
+  authenticate(magicLink);
+});
+
+document.getElementById('import_post').addEventListener('click', function() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    var currentUrl = tabs[0].url;
+    if (currentUrl.includes('twitter.com')) {
+      importTwitterPost(currentUrl);
+    } else {
+      createMessage('Current URL is not a Twitter URL.', true);
+    }
+  });
+});
+
+function checkLogin() {
+  // ...
+}
+
+function sendMagicLink(email) {
+  // ...
+  fetch(apiUrl, {
+    // ...
+  }).then(response => response.json())
+    .then(data => {
+      console.log(data);
+      createMessage('Magic link has been successfully sent.', false);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      createMessage('There was an error sending the magic link: ' + error, true);
+    });
+}
+
+function authenticate(magicLink) {
+  // ...
+  fetch(apiUrl, {
+    // ...
+  }).then(response => response.json())
+    .then(data => {
+      var accessToken = data.token.accessToken;
+      var username = data.user.username;
+      // store accessToken and username in local storage
+      chrome.storage.local.set({"accessToken": accessToken, "username": username}, function() {
+        console.log('Access Token and Username are set in local storage');
+        checkLogin(); 
+      });
+      createMessage('Successfully authenticated!', false);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      createMessage('There was an error during authentication: ' + error, true);
+    });
+}
+
+function importTwitterPost(twitterUrl, selectedTimelineIds = []) {
+  // retrieve access token and username from local storage
+  chrome.storage.local.get(["accessToken", "username"], function(items) {
+    var at = items.accessToken;
+    var un = items.username;
+    // ...
+    fetch(apiUrl, {
+      // ...
+    }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+        createMessage('Post has been successfully imported!', false);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        createMessage('There was an error during post import: ' + error, true);
+      });
+  });
+}
+
+function createMessage(text, isError = false) {
+  var message = document.createElement('div');
+  message.className = 'message';
+  message.textContent = text;
+  message.style.backgroundColor = isError ? '#ff4d4d' : '#4dff88'; // red for error, green for success
+  document.body.appendChild(message);
+  setTimeout(function() {
+    document.body.removeChild(message);
+  }, 3000); // remove message after 3 seconds
+}
+
+checkLogin();
