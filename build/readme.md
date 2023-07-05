@@ -1,4 +1,8 @@
+- Download everything here as a zip file by going to https://myriad.social/ext
+- Unzip the file. You will see a copy of this readme and a file called *myrimp.crx*.
 - Open Google Chrome / Microsoft Edge / Brave / Chromium.
 - Go to chrome://extensions using the URL bar.
 - Toggle "Developer Mode" (usually top right) to *on*.
-- Drag the *myrimp.crx* file onto the page
+- Drag the *myrimp.crx* file onto the page.
+- Find the Myriad logo under the puzzle piece icon, and pin it.
+- Use the extension by clicking on the Myriad logo and following the instructions to log in and start importing.
