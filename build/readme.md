@@ -1,0 +1,4 @@
+- Open Google Chrome / Microsoft Edge / Brave / Chromium.
+- Go to chrome://extensions
+- Toggle "Developer Mode" (usually top right) to on
+- Drag the crx file onto the page
