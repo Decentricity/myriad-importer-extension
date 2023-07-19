@@ -1,24 +1,38 @@
 {
-  "manifest_version": 2,
-  "name": "Myriad Importer",
+  "manifest_version": 3,
+  "name": "Myriad Extension",
   "version": "1.0",
-  "description": "Import Posts to Myriad",
-  "permissions": ["activeTab", "https://api.myriad.social/*", "storage", "tabs"],
-  "browser_action": {
-    "default_popup": "popup.html"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://twitter.com/*"],
-      "js": ["content.js"]
-    }
+  "description": "Import and Post to Myriad",
+  "permissions": [
+    "activeTab", 
+    "storage",
+    "tabs",
+    "scripting"
   ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "myriadlogo16.png",
+      "48": "myriadlogo48.png",
+      "128": "myriadlogo128.png"
+    }
+  },
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
   "icons": {
     "16": "myriadlogo16.png",
     "48": "myriadlogo48.png",
     "128": "myriadlogo128.png"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "host_permissions": [
+    "https://api.myriad.social/*", 
+    "https://api.pinata.cloud/*"
+  ]
 }
