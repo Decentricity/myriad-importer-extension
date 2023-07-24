@@ -239,51 +239,7 @@ document.getElementById('import_post').addEventListener('click', function () {
             postContent.value = '';
             postContent.style.display = 'none';
             this.style.display = 'none';
-        } else {
-            // Request the content script to scrape the page
-            chrome.tabs.sendMessage(tabs[0].id, { message: "get_selected_text" }, function(response) {
-                if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError.message);
-                    return;
-                }
-
-                var textBlocks = response.data;  // The data sent by the content script
-
-                // Capture the screenshot
-                chrome.tabs.captureVisibleTab(null, {format: "png"}, function(dataUrl) {
-                    var blob = dataURLToBlob(dataUrl);
-
-                    var formData = new FormData();
-                    formData.append("file", blob, `screenshot.png`);
-
-                    fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
-                        method: "POST",
-                        headers: {
-          "pinata_api_key": "c02a1bfa838c22fc7bad",
-                "pinata_secret_api_key": "6c8f435859846704f6fc53686a4d4aaf39d25bb055bbe748d91532f164e9e11f",
-                        },
-                        body: formData,
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Log Pinata response
-                        console.log('Pinata response:', data);
-                        // Add the IPFS link to the text
-                        textBlocks.unshift(`<p><center><a href="https://ipfs.io/ipfs/${data.IpfsHash}">IPFS Link</a><center></p>`);
-                        // Add the screenshot to the text
-                        textBlocks.unshift(`<p><img src="https://ipfs.io/ipfs/${data.IpfsHash}" alt="Imported Screenshot"></p>`);
-                        // Add the introductory sentence
-                        textBlocks.unshift(`<p>Imported from <a href="${currentUrl}">${currentUrl}</a>:</p>`);
-
-                        // Prepare title
-                        var title = currentUrl; // Or any suitable title
-
-                        // Create Myriad Post
-                        createMyriadPost(title, textBlocks, 'myriad', 'public');
-                    });
-                });
-            });
-        }
+        } 
     });
 });
 
@@ -295,6 +251,8 @@ document.getElementById('import_post').addEventListener('click', function () {
 
 
 function checkLogin() {
+	
+	var writepostbuttonElement = document.getElementById('write_post_button');
     var importbuttonElement = document.getElementById('import_post');
 importbuttonElement.innerText = importbuttonElement.textContent = 'new text';
      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -303,13 +261,16 @@ importbuttonElement.innerText = importbuttonElement.textContent = 'new text';
            if (currentUrl.includes('twitter.com') || currentUrl.includes('reddit.com')) {
        //displayUserFeedback(`The current page is natively importable to Myriad!`, true);
        contextElement.innerText = "The current page is natively importable to Myriad! ";
+              document.getElementById('write_post_button').style.display = 'none';
       importbuttonElement.innerText = importbuttonElement.textContent = 'Import Post';
     } else if (currentUrl.includes('youtube.com') || currentUrl.includes('twitch.tv')) {
         contextElement.innerText = "The current page can be embedded into a Myriad post! "; 
+        writepostbuttonElement.innerText=writepostbuttonElement.textContent = 'Add Caption';
         importbuttonElement.innerText = importbuttonElement.textContent = 'Embed Video';
     } else {
-        contextElement.innerText = "The current page can only be archived to Myriad via IPFS!";
+        contextElement.innerText = "Myriad supports imports from Twitter, Reddit, YouTube, and Twitch! You can still write a post below.";
         importbuttonElement.innerText = importbuttonElement.textContent = 'Archive Content';
+              document.getElementById('import_post').style.display = 'none';
     }        
      
      
