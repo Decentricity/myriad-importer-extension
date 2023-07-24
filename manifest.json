@@ -6,8 +6,10 @@
   "permissions": [
     "activeTab", 
     "storage",
-    "tabs",
-    "scripting"
+    "*://*.twitter.com/*",
+    "*://*.reddit.com/*",
+    "*://*.twitch.tv/*",
+    "*://*.youtube.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -25,14 +27,7 @@
     "48": "myriadlogo48.png",
     "128": "myriadlogo128.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"]
-    }
-  ],
   "host_permissions": [
-    "https://api.myriad.social/*", 
-    "https://api.pinata.cloud/*"
+    "https://api.myriad.social/*"
   ]
 }
